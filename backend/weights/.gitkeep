@@ -1,0 +1,3 @@
+# weights directory — place model files here after downloading from Kaggle
+# best_checkpoint.pth  ← main weights
+# retail_detector.onnx ← optional ONNX for OpenVINO inference

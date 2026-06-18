@@ -1,0 +1,43 @@
+# ── Core ML ───────────────────────────────────────────────────────────────────
+rfdetr>=0.1.0
+supervision>=0.22.0
+torch>=2.1.0                 # PyTorch CPU; replace with CUDA wheel if you have NVIDIA
+
+# ── Computer Vision ──────────────────────────────────────────────────────────
+opencv-python-headless>=4.9.0
+numpy>=1.24.0
+Pillow>=10.0.0
+albumentations>=1.3.0       # used by check_augmentation.py --preview
+
+# ── Web / API ─────────────────────────────────────────────────────────────────
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+aiofiles>=23.0.0
+websockets>=12.0
+
+# FIX #6: Rate limiting
+slowapi>=0.1.9
+
+# ── Data + Evaluation ─────────────────────────────────────────────────────────
+roboflow>=1.1.0              # dataset download
+pyyaml>=6.0
+
+# ── FIX #7: Intel Arc inference backends (install ONE of these) ──────────────
+#
+# Option A — ONNX + OpenVINO (recommended for Intel Arc, fastest, no GPU driver needed)
+#   pip install onnxruntime-openvino
+#
+# Option B — IPEX XPU (Intel Arc GPU via PyTorch, requires Intel GPU drivers)
+#   pip install intel-extension-for-pytorch
+#   pip install torch==2.1.0+cxx11.abi ... (see IPEX install matrix)
+#
+# Option C — CPU only (no extra install, ~100-200ms/frame)
+#   Already covered by torch>=2.1.0 above.
+#
+# The backend is auto-detected at startup — install whichever applies and
+# inference.py will pick it up automatically.
+
+# ── Uncomment for ONNX export (run on Kaggle, not locally) ───────────────────
+# onnxruntime>=1.18.0
+# onnx>=1.16.0
