@@ -1,3 +1,12 @@
+---
+title: Bigvision Backend
+emoji: 🚀
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+app_port: 7860
+---
 # ShelfSight — Retail Object Detector
 
 RF-DETR fine-tuned on a retail-shelf dataset (bottle · box · can · bag) with ByteTrack multi-object tracking and a FastAPI + React web interface.
