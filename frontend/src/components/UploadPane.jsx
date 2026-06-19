@@ -14,11 +14,12 @@ export default function UploadPane({ classColours }) {
   const inputRef = useRef(null)
 
   const handleFile = useCallback(async (file) => {
-    const isImageMime = file && file.type.startsWith('image/')
-    const isHeicExt = file && (file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif'))
-    
-    if (!isImageMime && !isHeicExt) {
-      setError('Please upload a valid image file (JPG, PNG, WEBP, HEIC)')
+    if (!file) return;
+
+    // Block explicitly wrong files (videos, pdfs), but allow everything else
+    // through to the backend (to account for weird Apple OS MIME/extension quirks)
+    if (file.type.startsWith('video/') || file.type === 'application/pdf') {
+      setError('Please upload a valid image file, not a video or document.')
       return
     }
 
