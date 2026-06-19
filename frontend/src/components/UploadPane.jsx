@@ -16,9 +16,12 @@ export default function UploadPane({ classColours }) {
   const handleFile = useCallback(async (file) => {
     if (!file) return;
 
-    // Block explicitly wrong files (videos, pdfs), but allow everything else
-    // through to the backend (to account for weird Apple OS MIME/extension quirks)
-    if (file.type.startsWith('video/') || file.type === 'application/pdf') {
+    const isHeicExt = file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
+
+    // Block explicitly wrong files (videos, pdfs), but allow everything else.
+    // EXCEPTION: If the file explicitly ends in .heic, bypass this block, because
+    // Apple devices frequently mislabel Live Photos as 'video/quicktime' MIME types.
+    if (!isHeicExt && (file.type.startsWith('video/') || file.type === 'application/pdf')) {
       setError('Please upload a valid image file, not a video or document.')
       return
     }
