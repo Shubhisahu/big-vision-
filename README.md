@@ -11,6 +11,10 @@ app_port: 7860
 
 RF-DETR fine-tuned on a retail-shelf dataset (bottle · box · can · bag) with ByteTrack multi-object tracking and a FastAPI + React web interface.
 
+### Live Deployments
+- **Frontend App (Vercel)**: [https://frontend-topaz-psi-71.vercel.app](https://frontend-topaz-psi-71.vercel.app)
+- **Backend API (Hugging Face)**: [https://huggingface.co/spaces/gonsbljb/bigvision-backend](https://huggingface.co/spaces/gonsbljb/bigvision-backend)
+
 ---
 
 ## Project Structure

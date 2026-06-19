@@ -340,26 +340,28 @@ def main():
     metrics = compute_metrics(predictions, targets, ds)
     lat     = compute_latency(latencies)
 
-    # ── Confusion matrix ─────────────────────────────────────────────────────
-    cm_path = EVAL_DIR / "confusion_matrix.png"
+    # ── Save all results ──────────────────────────────────────────────────────
+    output = {**metrics, "latency": lat, "split": args.split}
+    out_path = EVAL_DIR / f"metrics_{args.split}.json"
+    out_path.write_text(json.dumps(output, indent=2))
+    
+    # Rename previous artifacts inside script execution if needed, but since we define them above:
+    # Actually, let's redefine the cm_path and hard_failures paths based on the split.
+    cm_path = EVAL_DIR / f"confusion_matrix_{args.split}.png"
     plot_confusion_matrix(predictions, targets, ds, cm_path)
 
     # ── Failure analysis ─────────────────────────────────────────────────────
     test_paths = [Path(p) for p, _, _ in ds]
     find_hard_failures(
         test_paths, predictions, targets,
-        save_dir=EVAL_DIR / "hard_failures",
+        save_dir=EVAL_DIR / f"hard_failures_{args.split}",
         conf_threshold=0.6,
     )
 
-    # ── Save all results ──────────────────────────────────────────────────────
-    output = {**metrics, "latency": lat, "split": args.split}
-    out_path = EVAL_DIR / "metrics.json"
-    out_path.write_text(json.dumps(output, indent=2))
     print(f"\n[OK] All results saved to: {EVAL_DIR}")
-    print(f"   metrics.json:      {out_path}")
+    print(f"   metrics:           {out_path}")
     print(f"   confusion_matrix:  {cm_path}")
-    print(f"   hard failures:     {EVAL_DIR / 'hard_failures'}/")
+    print(f"   hard failures:     {EVAL_DIR / f'hard_failures_{args.split}'}/")
 
 
 if __name__ == "__main__":

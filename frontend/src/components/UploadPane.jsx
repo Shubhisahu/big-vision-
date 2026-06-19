@@ -14,8 +14,11 @@ export default function UploadPane({ classColours }) {
   const inputRef = useRef(null)
 
   const handleFile = useCallback(async (file) => {
-    if (!file || !file.type.startsWith('image/')) {
-      setError('Please upload a valid image file (JPG, PNG, WEBP)')
+    const isImageMime = file && file.type.startsWith('image/')
+    const isHeicExt = file && (file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif'))
+    
+    if (!isImageMime && !isHeicExt) {
+      setError('Please upload a valid image file (JPG, PNG, WEBP, HEIC)')
       return
     }
 
@@ -169,7 +172,7 @@ export default function UploadPane({ classColours }) {
                 </div>
                 <p className="dz-title">Drop your image here</p>
                 <p className="dz-sub">or <span className="dz-link">browse files</span></p>
-                <p className="dz-formats">JPG · PNG · WEBP · GIF</p>
+                <p className="dz-formats">JPG · PNG · WEBP · HEIC</p>
               </div>
             )}
           </div>

@@ -27,6 +27,14 @@ from typing import Optional
 
 import cv2          # type: ignore
 import numpy as np
+import io
+from PIL import Image
+
+try:
+    import pillow_heif
+    pillow_heif.register_heif_opener()
+except ImportError:
+    pass
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
 REPO_ROOT   = Path(__file__).resolve().parent.parent
@@ -383,6 +391,17 @@ def _draw_boxes(frame: np.ndarray, detections: list[Detection]) -> np.ndarray:
 
 
 def bytes_to_frame(raw: bytes) -> Optional[np.ndarray]:
+    # Try loading with PIL first to support HEIF/HEIC
+    try:
+        img = Image.open(io.BytesIO(raw))
+        if img.format in ('HEIC', 'HEIF'):
+            img = img.convert('RGB')
+            # Convert RGB (PIL) to BGR (OpenCV)
+            return cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+    except Exception:
+        pass
+
+    # Standard OpenCV decoding for JPEG, PNG, etc.
     arr = np.frombuffer(raw, dtype=np.uint8)
     return cv2.imdecode(arr, cv2.IMREAD_COLOR)
 
