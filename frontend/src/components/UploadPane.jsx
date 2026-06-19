@@ -20,7 +20,7 @@ export default function UploadPane({ classColours }) {
     const isHeicExt = file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
 
     if (!isHeicExt && (file.type.startsWith('video/') || file.type === 'application/pdf')) {
-      setError('Please upload a valid image file, not a video or document.')
+      setError('Please upload a valid image file (JPG, PNG, WEBP, HEIC). Videos and documents are not supported.')
       return
     }
 
