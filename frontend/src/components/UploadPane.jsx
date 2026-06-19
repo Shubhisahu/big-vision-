@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import ResultPane from './ResultPane.jsx'
 import './UploadPane.css'
+import heic2any from 'heic2any'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -18,23 +19,40 @@ export default function UploadPane({ classColours }) {
 
     const isHeicExt = file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
 
-    // Block explicitly wrong files (videos, pdfs), but allow everything else.
-    // EXCEPTION: If the file explicitly ends in .heic, bypass this block, because
-    // Apple devices frequently mislabel Live Photos as 'video/quicktime' MIME types.
     if (!isHeicExt && (file.type.startsWith('video/') || file.type === 'application/pdf')) {
       setError('Please upload a valid image file, not a video or document.')
       return
     }
 
-    const objectUrl = URL.createObjectURL(file)
-    setPreviewUrl(objectUrl)
     setResult(null)
     setError(null)
     setLoading(true)
 
+    let finalFile = file;
+
     try {
+      if (isHeicExt) {
+        // Convert HEIC to JPEG entirely in the frontend browser
+        const convertedBlob = await heic2any({
+          blob: file,
+          toType: "image/jpeg",
+          quality: 0.8
+        });
+        
+        // Handle case where heic2any returns an array of blobs (for animations)
+        const singleBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+        
+        // Re-package it as a File object so the rest of our logic works smoothly
+        finalFile = new File([singleBlob], file.name.replace(/\.heic|\.heif/i, ".jpg"), {
+          type: "image/jpeg"
+        });
+      }
+
+      const objectUrl = URL.createObjectURL(finalFile)
+      setPreviewUrl(objectUrl)
+
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', finalFile)
       formData.append('confidence', threshold)
 
       const res = await fetch(`${API_BASE}/infer`, {
