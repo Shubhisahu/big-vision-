@@ -125,7 +125,7 @@ export default function UploadPane({ classColours }) {
             <input
               ref={inputRef}
               type="file"
-              accept="image/*"
+              accept="image/*,.heic,.heif"
               onChange={onInputChange}
               style={{ display: 'none' }}
               id="file-input"
