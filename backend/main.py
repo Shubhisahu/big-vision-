@@ -106,6 +106,13 @@ app.add_middleware(
 
 app.mount("/videos", StaticFiles(directory=str(VIDEO_DIR)), name="videos")
 
+from fastapi.responses import RedirectResponse
+
+@app.get("/", include_in_schema=False)
+async def root():
+    # Redirect root to the interactive API docs
+    return RedirectResponse(url="/docs")
+
 
 # ─── Health ────────────────────────────────────────────────────────────────────
 @app.get("/health", tags=["System"])
